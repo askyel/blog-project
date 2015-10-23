@@ -1,5 +1,14 @@
 Bloginator Project - Travel Blog
 
+## Updated
+
+#### Team Members
+Ariel Levy (Leader)
+Bi Ling Wu (UX)
+Jeffrey Zou (Backend)
+
+## Original
+
 Members:
 
 Milo Bernfield-Millman (Backend)
