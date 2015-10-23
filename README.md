@@ -1,5 +1,5 @@
 Bloginator Project - Travel Blog
-
+x
 ## Updated
 
 #### Team Members
