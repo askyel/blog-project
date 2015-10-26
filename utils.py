@@ -92,7 +92,7 @@ def pwordAuth(username, password):
     result = db.accounts.find({uname:username})
     return results['pword'] == password
     
-
+"""
 def addAccount(uname, pword, first, last):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -106,7 +106,25 @@ def addAccount(uname, pword, first, last):
             return "This account name already exists"
     c.execute("INSERT INTO accounts VALUES (?, ?, ?, ?, ?, ?, ?);", (replaceAp(uname), replaceAp(pword), replaceAp(first), replaceAp(last), "", "", ""))
     conn.commit()
+"""
 
+def addAccount(username, password, first, last):
+    db = connection['Data']
+    if username.find(",") != -1:
+        return "This account name has a character that is not allowed (',')"
+    if username.find("'") != -1:
+        return "This account name has a character that is not allowed (''')"
+    accountnames = db.accounts.find()['uname']
+    for r in accountnames:
+        if r[0] == username:
+            return "This account name already exists"
+    db.accounts.insert_one({
+        'uname':replaceAp(username),
+        'pword':replaceAp(password),
+        'first':replaceAp(first),
+        'last':replaceAp(last)
+    })
+"""
 def changePword(uname, oldP, newP, cNewP):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -121,46 +139,120 @@ def changePword(uname, oldP, newP, cNewP):
         c.execute("UPDATE accounts SET pword = '"+replaceAp(newP)+"' WHERE uname = '"+uname+"';")
         conn.commit()        
         return "Password successfully updated"
-
+"""
+def changePword(username, oldP, newP, cNewP):
+    db = connection['Data']
+    p = db.accounts.find({'uname':'username'}, {'pword':1})
+    for r in p:
+        result = r[0]
+    if result != oldP:
+        return "The password you input was incorrect."
+    if newP != cNewP:
+        return "The confirmed new password did not match."
+    else:
+        db.accounts.update_one({
+            {'uname':'username'},
+            {
+                '$set': {
+                    'pword':'replaceAp(newP)'
+                }
+            }
+        })
+        return "Password successfully updated"
+'''
 def findName(uname):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
     n = c.execute("SELECT first, last FROM accounts WHERE uname ='"+uname+"';")
     for r in n:
         return unreplace(r[0]+" "+r[1])
-
+'''
+def findName(username):
+    db = connection['Data']
+    n = db.accounts.find({'uname':'username'},{'first':1,'last':1})
+    for r in n:
+        return unreplace(r[0]+" "+r[1])
+'''
 def editInfo(uname, info):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
     c.execute("UPDATE accounts SET info = '"+replaceAp(info)+"' WHERE uname = '"+uname+"';")
     conn.commit()
+'''
 
+def editInfo(usernmae, info):
+    db = connection['Data']
+    db.accounts.update_one({
+        {'uname':'username'},
+        {
+            '$set': {
+                'info':'replaceAp(info)'
+            }
+        }
+    })
+'''
 def showInfo(uname):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
     n = c.execute("SELECT info FROM accounts WHERE uname = '"+uname+"';")
     for r in n:
         return unreplace(r[0])
+'''
 
+def showInfo(username):
+    db = connection['Data']
+    n = db.accounts.find({'uname':'username'},{'info':1})
+    for r in n:
+        return unreplace(r[0])
+
+'''
 def newPic(uname):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
     c.execute("UPDATE accounts SET piclink = 'static/"+uname+".png' WHERE uname = '"+uname+"';")
     conn.commit()
+'''
 
+def newPic(username):
+    db = connection['Data']
+    db.accounts.update_one({
+        {'uname':'username'},
+        {
+            '$set':{
+                'piclink':'static/"username".png'
+            }
+        }
+    })
+'''
 def findPic(uname):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
     n = c.execute("SELECT piclink FROM accounts WHERE uname = '"+uname+"';")
     for r in n:
         return r[0]
+'''
+
+def findPic(username):
+    db = connection['Data']
+    n = db.accounts.find({'uname':'username'},{'picklink':1})
+    for r in n:
+        return r[0]
+
 #+=====++ Friends ++=====+#
+'''
 def friendList(uname): # returns list of friends
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
     n = c.execute("SELECT friends FROM accounts WHERE uname = '"+uname+"';")
     for r in n:
         return r[0].split(",") # this is why no commas!
+'''
+
+def friendList(username):
+    db = connection['Data']
+    n = db.accounts.find({'uname':'username'}, {'friends':1})
+    for r in n:
+        return r[0].split(",")
         
 def isFriend(uname, friend): # returns if uname has friend as friend
     f = friendList(uname)
@@ -170,6 +262,7 @@ def isFriend(uname, friend): # returns if uname has friend as friend
                 return True
     return False
 
+"""
 def addFriend(uname, friend): # adds friend to uname's friends
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -189,6 +282,33 @@ def addFriend(uname, friend): # adds friend to uname's friends
     c.execute("UPDATE accounts SET friends = '"+friends+"' WHERE uname = '"+uname+"';")
     conn.commit()
     return True
+"""
+
+def addFriend(username, friend):
+    db = connection['Data']
+    if isFriend(username, friend):
+        return False
+    if not unameAuth(friend):
+        return False
+    if not unameAuth(username):
+        return False
+    f = db.accounts.find({'uname':'username'},{'friends':1})
+    friends = ""
+    for s in f:
+        friends = s[0]
+    if friends != "":
+        friends += ","
+    friends += friend
+    db.accounts.update_one({
+        {'uname':'username'},
+        {
+            '$set': {
+                'friends':'+friends+'
+            }
+        }
+    })
+    return True
+
 #+=====++ Blog Posts ++=====+#
 
 # posts:
