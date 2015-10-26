@@ -319,7 +319,7 @@ def addFriend(username, friend):
 #
 # likes:
 # (id, uname)
-
+'''
 def findID():
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -330,13 +330,28 @@ def findID():
         if (id > max):
             max = id
     return max+1
+'''
 
+def findID():
+    db = connection['Data']
+    ids = db.posts.find({'id':1,_id:0})
+    big = 0
+    for r in ids:
+        i = r[0]
+        if (i > big):
+            big = i
+    return big+1
+'''
 def addPost(uname, title, sub, post):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
     c.execute("INSERT INTO posts VALUES (?, ?, ?, ?, ?, ?);", (findID(), uname, replaceAp(title), replaceAp(sub), replaceAp(post), displayDate()))
     conn.commit()
-
+'''
+def addPost(username, title, sub, post):
+    db = connection['Data']
+    db.posts.insert({'id':findID(), uname:username, title: replaceAp(title), sub:replaceAp(sub), post:replaceAp(post),time:displayDate()})
+'''
 def showPosts(uname):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -345,6 +360,15 @@ def showPosts(uname):
     for r in posts:
         list.append(r)# ID, title, sub, post, stamp
     return list
+'''
+def showPosts(username):
+    db = connection['Data']
+    posts = db.posts.find({uname:username},{_id:0})
+    l = []
+    for r in posts:
+        l.append(r)
+    return l
+'''
 def showFriendPosts(uname):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -354,20 +378,39 @@ def showFriendPosts(uname):
         if isFriend(uname, r[1]):
             friendPosts.append(r)# note that everything after id is +1 in index
     return friendPosts
-
+'''
+def showFriendPosts(username):
+    db = connection['Data']
+    posts = db.posts.find({_id:0})
+    friendPosts = []
+    for r in posts:
+        if isFriend(username, r[1]):
+            friendPosts.append(r)
+    return friendPosts
+'''
 def showPost(ID):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
     post = c.execute("SELECT post FROM posts WHERE id = "+str(ID)+";")
     for r in post:
         return unreplace(r[0])
-
+'''
+def showPost(ID):
+    db = connection['Data']
+    post = db.posts.find({'id':str(ID)}, {post:1,_id:0})
+    for r in post:
+        return unreplace(r[0])
+'''
 def addComment(ID, uname, comment):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
     c.execute("INSERT INTO comments VALUES (?, ?, ?, ?);", (ID, uname, replaceAp(comment), displayDate()))
     conn.commit()
-
+'''
+def addComment(ID, username, comment):
+    db = connection['Data']
+    db.comments.upsert({'id':ID,'uname':username,'comment':replaceAp(comment), 'time':displayDate()})
+'''
 def showComments(ID):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -376,7 +419,15 @@ def showComments(ID):
     for r in comments:
         list.append(r)# uname, comment, time
     return list
-
+'''
+def showComments(ID):
+    db = connection['Data']
+    comments = db.comments.find({'id':str(ID)},{uname:1,comment:1,time:1,_id:0})
+    l = []
+    for r in comments:
+        l.append(r)
+    return l
+'''
 def showAllComments():
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -385,13 +436,25 @@ def showAllComments():
     for r in comments:
         list.append(r)# id, uname, comment, time
     return list
-
+'''
+def showAllComments():
+    db = connection['Data']
+    comments = db.comments.find({_id:0})
+    l = []
+    for r in comments:
+        l.append(r)
+    return l
+'''
 def addLike(ID, uname):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
     c.execute("INSERT INTO likes VALUES (?, ?);", (ID, uname))
     conn.commit()
-
+'''
+def addLike(ID, username):
+    db = connection['Data']
+    db.likes.upsert({'id':ID, 'uname':username})
+'''
 def showLikes(ID):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -400,6 +463,14 @@ def showLikes(ID):
     for r in likes:
         list.append(r[0])# uname
     return list
+'''
+def showLikes(ID):
+    db = connection['Data']
+    likes = db.likes.find({'id':str(ID)}, {uname:1,_id:0})
+    l = []
+    for r in likes:
+        l.append(r[0])
+    return l
 
 def displayDate():
     import datetime
