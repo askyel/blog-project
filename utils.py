@@ -28,7 +28,7 @@ def setup():
     })
     collection = db['posts']
     posts.insert({
-        'id':,
+        'id':'',
         'uname':'',
         'title':'',
         'sub':'',
@@ -37,14 +37,14 @@ def setup():
     })
     collection = db['comments']
     comments.insert({
-        'id':,
+        'id':'',
         'uname':'',
         'comment':'',
         'time':''
     })
     collection = db['likes']
     likes.insert({
-        'id':,
+        'id':'',
         'uname':''
     })
 
