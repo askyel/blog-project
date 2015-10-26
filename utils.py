@@ -1,6 +1,9 @@
-import sqlite3
+from pymongo import MongoClient
+
+connection = MongoClient()
 
 #+=====++ Setup ++=====+#
+'''
 def setup():
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -9,6 +12,41 @@ def setup():
     c.execute("CREATE TABLE comments (id integer, uname text, comment text, time text)")
     c.execute("CREATE TABLE likes (id integer, uname text)")
     conn.commit()
+'''
+
+def setup():
+    db = connection['Data']
+    collection = db['accounts']
+    accounts.insert({
+        'uname': '',
+        'pword':'',
+        'first':'',
+        'last':'',
+        'info':'',
+        'piclink':'',
+        'friends':''
+    })
+    collection = db['posts']
+    posts.insert({
+        'id':,
+        'uname':'',
+        'title':'',
+        'sub':'',
+        'post':'',
+        'time':''
+    })
+    collection = db['comments']
+    comments.insert({
+        'id':,
+        'uname':'',
+        'comment':'',
+        'time':''
+    })
+    collection = db['likes']
+    likes.insert({
+        'id':,
+        'uname':''
+    })
 
 #+=====++ Apostrophes ++=====+#
 def replaceAp(s):
@@ -21,6 +59,7 @@ def listRep(l):
         n.append(unreplace(s))
     return n
 #+=====++ Accounts ++=====+#
+'''
 def unameAuth(uname):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -29,7 +68,16 @@ def unameAuth(uname):
         if r[0] == uname:
             return True
     return False
+'''
 
+
+def unameAuth(username):
+    db = connection['Data']
+    accounts = db.accounts.find({uname:username})
+    if accounts != None:
+        return True
+    return False
+'''
 def pwordAuth(uname, pword):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -37,7 +85,14 @@ def pwordAuth(uname, pword):
     for r in p:
         return r[0] == pword
     return False
+'''
 
+def pwordAuth(username, password):
+    db = connection['Data']
+    result = db.accounts.find({uname:username})
+    return results['pword'] == password
+    
+"""
 def addAccount(uname, pword, first, last):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -51,7 +106,25 @@ def addAccount(uname, pword, first, last):
             return "This account name already exists"
     c.execute("INSERT INTO accounts VALUES (?, ?, ?, ?, ?, ?, ?);", (replaceAp(uname), replaceAp(pword), replaceAp(first), replaceAp(last), "", "", ""))
     conn.commit()
+"""
 
+def addAccount(username, password, first, last):
+    db = connection['Data']
+    if username.find(",") != -1:
+        return "This account name has a character that is not allowed (',')"
+    if username.find("'") != -1:
+        return "This account name has a character that is not allowed (''')"
+    accountnames = db.accounts.find()['uname']
+    for r in accountnames:
+        if r[0] == username:
+            return "This account name already exists"
+    db.accounts.insert_one({
+        'uname':replaceAp(username),
+        'pword':replaceAp(password),
+        'first':replaceAp(first),
+        'last':replaceAp(last)
+    })
+"""
 def changePword(uname, oldP, newP, cNewP):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -66,46 +139,120 @@ def changePword(uname, oldP, newP, cNewP):
         c.execute("UPDATE accounts SET pword = '"+replaceAp(newP)+"' WHERE uname = '"+uname+"';")
         conn.commit()        
         return "Password successfully updated"
-
+"""
+def changePword(username, oldP, newP, cNewP):
+    db = connection['Data']
+    p = db.accounts.find({'uname':'username'}, {'pword':1})
+    for r in p:
+        result = r[0]
+    if result != oldP:
+        return "The password you input was incorrect."
+    if newP != cNewP:
+        return "The confirmed new password did not match."
+    else:
+        db.accounts.update_one({
+            {'uname':'username'},
+            {
+                '$set': {
+                    'pword':'replaceAp(newP)'
+                }
+            }
+        })
+        return "Password successfully updated"
+'''
 def findName(uname):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
     n = c.execute("SELECT first, last FROM accounts WHERE uname ='"+uname+"';")
     for r in n:
         return unreplace(r[0]+" "+r[1])
-
+'''
+def findName(username):
+    db = connection['Data']
+    n = db.accounts.find({'uname':'username'},{'first':1,'last':1})
+    for r in n:
+        return unreplace(r[0]+" "+r[1])
+'''
 def editInfo(uname, info):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
     c.execute("UPDATE accounts SET info = '"+replaceAp(info)+"' WHERE uname = '"+uname+"';")
     conn.commit()
+'''
 
+def editInfo(usernmae, info):
+    db = connection['Data']
+    db.accounts.update_one({
+        {'uname':'username'},
+        {
+            '$set': {
+                'info':'replaceAp(info)'
+            }
+        }
+    })
+'''
 def showInfo(uname):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
     n = c.execute("SELECT info FROM accounts WHERE uname = '"+uname+"';")
     for r in n:
         return unreplace(r[0])
+'''
 
+def showInfo(username):
+    db = connection['Data']
+    n = db.accounts.find({'uname':'username'},{'info':1})
+    for r in n:
+        return unreplace(r[0])
+
+'''
 def newPic(uname):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
     c.execute("UPDATE accounts SET piclink = 'static/"+uname+".png' WHERE uname = '"+uname+"';")
     conn.commit()
+'''
 
+def newPic(username):
+    db = connection['Data']
+    db.accounts.update_one({
+        {'uname':'username'},
+        {
+            '$set':{
+                'piclink':'static/"username".png'
+            }
+        }
+    })
+'''
 def findPic(uname):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
     n = c.execute("SELECT piclink FROM accounts WHERE uname = '"+uname+"';")
     for r in n:
         return r[0]
+'''
+
+def findPic(username):
+    db = connection['Data']
+    n = db.accounts.find({'uname':'username'},{'picklink':1})
+    for r in n:
+        return r[0]
+
 #+=====++ Friends ++=====+#
+'''
 def friendList(uname): # returns list of friends
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
     n = c.execute("SELECT friends FROM accounts WHERE uname = '"+uname+"';")
     for r in n:
         return r[0].split(",") # this is why no commas!
+'''
+
+def friendList(username):
+    db = connection['Data']
+    n = db.accounts.find({'uname':'username'}, {'friends':1})
+    for r in n:
+        return r[0].split(",")
         
 def isFriend(uname, friend): # returns if uname has friend as friend
     f = friendList(uname)
@@ -115,6 +262,7 @@ def isFriend(uname, friend): # returns if uname has friend as friend
                 return True
     return False
 
+"""
 def addFriend(uname, friend): # adds friend to uname's friends
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -134,6 +282,33 @@ def addFriend(uname, friend): # adds friend to uname's friends
     c.execute("UPDATE accounts SET friends = '"+friends+"' WHERE uname = '"+uname+"';")
     conn.commit()
     return True
+"""
+
+def addFriend(username, friend):
+    db = connection['Data']
+    if isFriend(username, friend):
+        return False
+    if not unameAuth(friend):
+        return False
+    if not unameAuth(username):
+        return False
+    f = db.accounts.find({'uname':'username'},{'friends':1})
+    friends = ""
+    for s in f:
+        friends = s[0]
+    if friends != "":
+        friends += ","
+    friends += friend
+    db.accounts.update_one({
+        {'uname':'username'},
+        {
+            '$set': {
+                'friends':'+friends+'
+            }
+        }
+    })
+    return True
+
 #+=====++ Blog Posts ++=====+#
 
 # posts:
@@ -144,7 +319,7 @@ def addFriend(uname, friend): # adds friend to uname's friends
 #
 # likes:
 # (id, uname)
-
+'''
 def findID():
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -155,13 +330,28 @@ def findID():
         if (id > max):
             max = id
     return max+1
+'''
 
+def findID():
+    db = connection['Data']
+    ids = db.posts.find({'id':1,_id:0})
+    big = 0
+    for r in ids:
+        i = r[0]
+        if (i > big):
+            big = i
+    return big+1
+'''
 def addPost(uname, title, sub, post):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
     c.execute("INSERT INTO posts VALUES (?, ?, ?, ?, ?, ?);", (findID(), uname, replaceAp(title), replaceAp(sub), replaceAp(post), displayDate()))
     conn.commit()
-
+'''
+def addPost(username, title, sub, post):
+    db = connection['Data']
+    db.posts.insert({'id':findID(), uname:username, title: replaceAp(title), sub:replaceAp(sub), post:replaceAp(post),time:displayDate()})
+'''
 def showPosts(uname):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -170,6 +360,15 @@ def showPosts(uname):
     for r in posts:
         list.append(r)# ID, title, sub, post, stamp
     return list
+'''
+def showPosts(username):
+    db = connection['Data']
+    posts = db.posts.find({uname:username},{_id:0})
+    l = []
+    for r in posts:
+        l.append(r)
+    return l
+'''
 def showFriendPosts(uname):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -179,20 +378,39 @@ def showFriendPosts(uname):
         if isFriend(uname, r[1]):
             friendPosts.append(r)# note that everything after id is +1 in index
     return friendPosts
-
+'''
+def showFriendPosts(username):
+    db = connection['Data']
+    posts = db.posts.find({_id:0})
+    friendPosts = []
+    for r in posts:
+        if isFriend(username, r[1]):
+            friendPosts.append(r)
+    return friendPosts
+'''
 def showPost(ID):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
     post = c.execute("SELECT post FROM posts WHERE id = "+str(ID)+";")
     for r in post:
         return unreplace(r[0])
-
+'''
+def showPost(ID):
+    db = connection['Data']
+    post = db.posts.find({'id':str(ID)}, {post:1,_id:0})
+    for r in post:
+        return unreplace(r[0])
+'''
 def addComment(ID, uname, comment):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
     c.execute("INSERT INTO comments VALUES (?, ?, ?, ?);", (ID, uname, replaceAp(comment), displayDate()))
     conn.commit()
-
+'''
+def addComment(ID, username, comment):
+    db = connection['Data']
+    db.comments.upsert({'id':ID,'uname':username,'comment':replaceAp(comment), 'time':displayDate()})
+'''
 def showComments(ID):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -201,7 +419,15 @@ def showComments(ID):
     for r in comments:
         list.append(r)# uname, comment, time
     return list
-
+'''
+def showComments(ID):
+    db = connection['Data']
+    comments = db.comments.find({'id':str(ID)},{uname:1,comment:1,time:1,_id:0})
+    l = []
+    for r in comments:
+        l.append(r)
+    return l
+'''
 def showAllComments():
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -210,13 +436,25 @@ def showAllComments():
     for r in comments:
         list.append(r)# id, uname, comment, time
     return list
-
+'''
+def showAllComments():
+    db = connection['Data']
+    comments = db.comments.find({_id:0})
+    l = []
+    for r in comments:
+        l.append(r)
+    return l
+'''
 def addLike(ID, uname):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
     c.execute("INSERT INTO likes VALUES (?, ?);", (ID, uname))
     conn.commit()
-
+'''
+def addLike(ID, username):
+    db = connection['Data']
+    db.likes.upsert({'id':ID, 'uname':username})
+'''
 def showLikes(ID):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -225,6 +463,14 @@ def showLikes(ID):
     for r in likes:
         list.append(r[0])# uname
     return list
+'''
+def showLikes(ID):
+    db = connection['Data']
+    likes = db.likes.find({'id':str(ID)}, {uname:1,_id:0})
+    l = []
+    for r in likes:
+        l.append(r[0])
+    return l
 
 def displayDate():
     import datetime
