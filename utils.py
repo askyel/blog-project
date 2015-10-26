@@ -1,6 +1,9 @@
-import sqlite3
+from pymongo import MongoClient
+
+connection = MongoClient()
 
 #+=====++ Setup ++=====+#
+'''
 def setup():
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -9,6 +12,41 @@ def setup():
     c.execute("CREATE TABLE comments (id integer, uname text, comment text, time text)")
     c.execute("CREATE TABLE likes (id integer, uname text)")
     conn.commit()
+'''
+
+def setup():
+    db = connection['Data']
+    collection = db['accounts']
+    accounts.insert({
+        'uname': '',
+        'pword':'',
+        'first':'',
+        'last':'',
+        'info':'',
+        'piclink':'',
+        'friends':''
+    })
+    collection = db['posts']
+    posts.insert({
+        'id':,
+        'uname':'',
+        'title':'',
+        'sub':'',
+        'post':'',
+        'time':''
+    })
+    collection = db['comments']
+    comments.insert({
+        'id':,
+        'uname':'',
+        'comment':'',
+        'time':''
+    })
+    collection = db['likes']
+    likes.insert({
+        'id':,
+        'uname':''
+    })
 
 #+=====++ Apostrophes ++=====+#
 def replaceAp(s):
@@ -21,6 +59,7 @@ def listRep(l):
         n.append(unreplace(s))
     return n
 #+=====++ Accounts ++=====+#
+'''
 def unameAuth(uname):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -29,7 +68,16 @@ def unameAuth(uname):
         if r[0] == uname:
             return True
     return False
+'''
 
+
+def unameAuth(username):
+    db = connection['Data']
+    accounts = db.accounts.find({uname:username})
+    if accounts != None:
+        return True
+    return False
+'''
 def pwordAuth(uname, pword):
     conn = sqlite3.connect("Data.db")
     c = conn.cursor()
@@ -37,6 +85,13 @@ def pwordAuth(uname, pword):
     for r in p:
         return r[0] == pword
     return False
+'''
+
+def pwordAuth(username, password):
+    db = connection['Data']
+    result = db.accounts.find({uname:username})
+    return results['pword'] == password
+    
 
 def addAccount(uname, pword, first, last):
     conn = sqlite3.connect("Data.db")
