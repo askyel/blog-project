@@ -73,7 +73,7 @@ def unameAuth(uname):
 
 def unameAuth(username):
     db = connection['Data']
-    accounts = db.accounts.find({uname:username})
+    accounts = db.accounts.find({uname:"username"})
     if accounts != None:
         return True
     return False
@@ -89,8 +89,9 @@ def pwordAuth(uname, pword):
 
 def pwordAuth(username, password):
     db = connection['Data']
-    result = db.accounts.find({uname:username})
-    return results['pword'] == password
+    result = db.accounts.find({'uname':'username'})
+    for r in result:
+        return r['pword'] == password
     
 """
 def addAccount(uname, pword, first, last):
