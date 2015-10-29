@@ -184,14 +184,16 @@ def editInfo(uname, info):
 
 def editInfo(username, info):
     db = connection['Data']
-    db.accounts.update_one({
+    inform = replaceAp(info)
+    db.accounts.update_one(
         {'uname':'username'},
         {
             '$set': {
-                'info':'replaceAp(info)'
+                'info':'inform'
             }
         }
-    })
+    )
+
 '''
 def showInfo(uname):
     conn = sqlite3.connect("Data.db")
@@ -253,8 +255,10 @@ def friendList(uname): # returns list of friends
 def friendList(username):
     db = connection['Data']
     n = db.accounts.find({'uname':'username'}, {'friends':1})
-    for r in n:
-        return r[0].split(",")
+    if n != None:
+        for r in n:
+            return r[0].split(",")
+    return []
         
 def isFriend(uname, friend): # returns if uname has friend as friend
     f = friendList(uname)
@@ -365,7 +369,7 @@ def showPosts(uname):
 '''
 def showPosts(username):
     db = connection['Data']
-    posts = db.posts.find({uname:username},{_id:0})
+    posts = db.posts.find({'uname':'username'},{'_id':0})
     l = []
     for r in posts:
         l.append(r)
@@ -441,7 +445,7 @@ def showAllComments():
 '''
 def showAllComments():
     db = connection['Data']
-    comments = db.comments.find({_id:0})
+    comments = db.comments.find({'_id':0})
     l = []
     for r in comments:
         l.append(r)
