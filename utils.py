@@ -73,7 +73,7 @@ def unameAuth(uname):
 
 def unameAuth(username):
     db = connection['Data']
-    accounts = db.accounts.find_one({'uname':"username"})
+    accounts = db.accounts.find_one({'uname':"username"}{'uname':1})[0]['uname']
     if accounts == None:
         return False
     return True
@@ -90,7 +90,7 @@ def pwordAuth(uname, pword):
 
 def pwordAuth(username, password):
     db = connection['Data']
-    result = db.accounts.find({'uname':'username'})
+    result = db.accounts.find({'uname':'username'})[0]
     for r in result:
         return r['pword'] == password
     
@@ -118,7 +118,7 @@ def addAccount(username, password, first, last):
         return "This account name has a character that is not allowed (''')"
     accountnames = db.accounts.find({'uname':'username'})
     for r in accountnames:
-        if r[0] == username:
+        if r['uname'] == username:
             return "This account name already exists"
     db.accounts.insert_one({
         'uname':replaceAp(username),
@@ -126,6 +126,7 @@ def addAccount(username, password, first, last):
         'first':replaceAp(first),
         'last':replaceAp(last)
     })
+
 """
 def changePword(uname, oldP, newP, cNewP):
     conn = sqlite3.connect("Data.db")
@@ -146,7 +147,7 @@ def changePword(username, oldP, newP, cNewP):
     db = connection['Data']
     p = db.accounts.find({'uname':'username'}, {'pword':1})
     for r in p:
-        result = r[0]
+        result = r[0]['pword']
     if result != oldP:
         return "The password you input was incorrect."
     if newP != cNewP:
@@ -171,9 +172,9 @@ def findName(uname):
 '''
 def findName(username):
     db = connection['Data']
-    n = db.accounts.find({'uname':'username'},{'first':1,'last':1})
-    for r in n:
-        return unreplace(r[0]+" "+r[1])
+    n = db.accounts.find({'uname':'username'},{'first':1,'last':1})[0]
+    return unreplace(r['first']+" "+r['last'])
+
 '''
 def editInfo(uname, info):
     conn = sqlite3.connect("Data.db")
@@ -205,9 +206,8 @@ def showInfo(uname):
 
 def showInfo(username):
     db = connection['Data']
-    n = db.accounts.find({'uname':'username'},{'info':1})
-    for r in n:
-        return unreplace(r[0])
+    n = db.accounts.find({'uname':'username'},{'info':1})[0]
+    return unreplace(r['info'])
 
 '''
 def newPic(uname):
@@ -227,6 +227,7 @@ def newPic(username):
             }
         }
     })
+
 '''
 def findPic(uname):
     conn = sqlite3.connect("Data.db")
@@ -238,9 +239,8 @@ def findPic(uname):
 
 def findPic(username):
     db = connection['Data']
-    n = db.accounts.find({'uname':'username'},{'picklink':1})
-    for r in n:
-        return r[0]
+    n = db.accounts.find({'uname':'username'},{'picklink':1})[0]
+    return r['piclink']
 
 #+=====++ Friends ++=====+#
 '''
@@ -254,10 +254,9 @@ def friendList(uname): # returns list of friends
 
 def friendList(username):
     db = connection['Data']
-    n = db.accounts.find({'uname':'username'}, {'friends':1})
+    n = db.accounts.find({'uname':'username'}, {'friends':1})[0]
     if n != None:
-        for r in n:
-            return r[0].split(",")
+        return r['friends'].split(",")
     return []
         
 def isFriend(uname, friend): # returns if uname has friend as friend
@@ -298,11 +297,10 @@ def addFriend(username, friend):
         return False
     if not unameAuth(username):
         return False
-    f = db.accounts.find({'uname':'username'},{'friends':1})
-    friends = ""
-    for s in f:
-        friends = s[0]
-    if friends != "":
+        f = db.accounts.find('$and':[{'uname':'username'},{'friends':'friend'}],{'friends':1})[0]
+    #for s in f:
+        #friends = s['friends']
+    if friends == "":
         friends += ","
     friends += friend
     db.accounts.update_one({
