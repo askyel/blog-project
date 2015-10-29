@@ -73,10 +73,11 @@ def unameAuth(uname):
 
 def unameAuth(username):
     db = connection['Data']
-    accounts = db.accounts.find({uname:"username"})
-    if accounts != None:
-        return True
-    return False
+    accounts = db.accounts.find_one({'uname':"username"})
+    if accounts == None:
+        return False
+    return True
+
 '''
 def pwordAuth(uname, pword):
     conn = sqlite3.connect("Data.db")
@@ -115,7 +116,7 @@ def addAccount(username, password, first, last):
         return "This account name has a character that is not allowed (',')"
     if username.find("'") != -1:
         return "This account name has a character that is not allowed (''')"
-    accountnames = db.accounts.find()['uname']
+    accountnames = db.accounts.find({'uname':'username'})
     for r in accountnames:
         if r[0] == username:
             return "This account name already exists"
@@ -181,7 +182,7 @@ def editInfo(uname, info):
     conn.commit()
 '''
 
-def editInfo(usernmae, info):
+def editInfo(username, info):
     db = connection['Data']
     db.accounts.update_one({
         {'uname':'username'},
