@@ -73,8 +73,10 @@ def unameAuth(uname):
 
 def unameAuth(username):
     db = connection['Data']
-    accounts = db.accounts.find({'uname':"username"},{'uname':1})[0]['uname']
-    if accounts == None:
+    accounts = db.accounts.find({'uname':"username"}) 
+    print accounts.count() 
+
+    if accounts.count() == 0:
         return False
     return True
 
@@ -91,8 +93,11 @@ def pwordAuth(uname, pword):
 def pwordAuth(username, password):
     db = connection['Data']
     #print db.accounts.find_one({'uname':username})
-    result = db.accounts.find_one({'uname':username})['pword']
-    return result == password
+    result = db.accounts.find_one({'uname':username})
+    if len(result) == 0:
+	    return False
+    p = result['pword']
+    return p == password
     
 """
 def addAccount(uname, pword, first, last):
@@ -340,16 +345,9 @@ def findID():
 
 def findID():
     db = connection['Data']
-    ids = db.posts.find()['id']
+    ids = db.posts.find()
     print ids
-    if ids == None:
-        return 0
-    max = 0
-    for r in ids:
-        i = r[0]
-        if (i > max):
-            max = i
-    return max+1
+    return ids.count()
 
 '''
 def addPost(uname, title, sub, post):
@@ -360,7 +358,7 @@ def addPost(uname, title, sub, post):
 '''
 def addPost(username, title, sub, post):
     db = connection['Data']
-    db.posts.insert({'id':findID(), uname:username, title: replaceAp(title), sub:replaceAp(sub), post:replaceAp(post),time:displayDate()})
+    db.posts.insert({'id':findID(), 'uname':username, 'title':replaceAp(title), 'sub':replaceAp(sub), 'post':replaceAp(post), 'time':displayDate()})
 '''
 def showPosts(uname):
     conn = sqlite3.connect("Data.db")
@@ -391,7 +389,7 @@ def showFriendPosts(uname):
 '''
 def showFriendPosts(username):
     db = connection['Data']
-    posts = db.posts.find({_id:0})
+    posts = db.posts.find({'username':"username"})
     friendPosts = []
     for r in posts:
         if isFriend(username, r[1]):
