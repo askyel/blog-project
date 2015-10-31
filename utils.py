@@ -73,8 +73,10 @@ def unameAuth(uname):
 
 def unameAuth(username):
     db = connection['Data']
-    accounts = db.accounts.find({'uname':"username"},{'uname':1})[0]['uname']
-    if accounts == None:
+    accounts = db.accounts.find({'uname':"username"}) #,{'uname':1})[0]['uname']
+    print accounts.count() 
+
+    if accounts.count() == 0:
         return False
     return True
 
