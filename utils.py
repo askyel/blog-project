@@ -115,7 +115,7 @@ def addAccount(uname, pword, first, last):
     conn.commit()
 """
 
-def addAccount(username, password, first, last):
+def addAccount(username, password, first, last, info):
     db = connection['Data']
     if username.find(",") != -1:
         return "This account name has a character that is not allowed (',')"
@@ -129,7 +129,8 @@ def addAccount(username, password, first, last):
         'uname':replaceAp(username),
         'pword':replaceAp(password),
         'first':replaceAp(first),
-        'last':replaceAp(last)
+        'last':replaceAp(last),
+	'info':replaceAp(info)
     })
 
 """

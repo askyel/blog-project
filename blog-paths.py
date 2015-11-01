@@ -20,7 +20,7 @@ def login():
 def register():
     if str(request.form["button"]) == "Register!":
         if utils.unameAuth(str(request.form["username"])) != True:
-            utils.addAccount(str(request.form["username"]), str(request.form["password"]), str(request.form["firstname"]), str(request.form["lastname"]))
+            utils.addAccount(str(request.form["username"]), str(request.form["password"]), str(request.form["firstname"]), str(request.form["lastname"]), str(request.form["paragraph_text"]))
             utils.editInfo(str(request.form["username"]), str(request.form["paragraph_text"]))
             return redirect('/feed/' + str(request.form["username"]))
         else:
