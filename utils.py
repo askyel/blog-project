@@ -130,7 +130,8 @@ def addAccount(username, password, first, last, info):
         'pword':replaceAp(password),
         'first':replaceAp(first),
         'last':replaceAp(last),
-	'info':replaceAp(info)
+	'info':replaceAp(info),
+	'friends':' '
     })
 
 """
@@ -166,14 +167,9 @@ def changePword(username, oldP, newP, cNewP):
             {'uname':'username'},
             {
                 '$set': {
-                    'pword':'replaceAp(newP)'
+                    'pword':replaceAp(newP)
                 }
-            },
-	    {'first':p['first']},
-	    {'last':p['last']},
-	    {'info':p['info']},
-	    #{'piclink':p['piclink']},
-	    {'friends':p['friends']}
+	    }
         })
         return "Password successfully updated"
 '''
