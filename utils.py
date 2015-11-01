@@ -23,7 +23,7 @@ def setup():
         'first':'',
         'last':'',
         'info':'',
-        'piclink':'',
+        #'piclink':'',
         'friends':''
     })
     collection = db['posts']
@@ -94,7 +94,7 @@ def pwordAuth(username, password):
     db = connection['Data']
     #print db.accounts.find_one({'uname':username})
     result = db.accounts.find_one({'uname':username})
-    if len(result) == 0:
+    if result == None or len(result) == 0:
 	    return False
     p = result['pword']
     return p == password
@@ -148,23 +148,31 @@ def changePword(uname, oldP, newP, cNewP):
         conn.commit()        
         return "Password successfully updated"
 """
+
 def changePword(username, oldP, newP, cNewP):
     db = connection['Data']
-    p = db.accounts.find({'uname':'username'}, {'pword':1})
-    for r in p:
-        result = r[0]['pword']
+    p = db.accounts.find_one({'uname':username})
+    print username
+    if p == None:
+	    return "Username doesn't exist."
+    result = p['pword']
     if result != oldP:
         return "The password you input was incorrect."
     if newP != cNewP:
         return "The confirmed new password did not match."
     else:
-        db.accounts.update_one({
+        db.accounts.update({
             {'uname':'username'},
             {
                 '$set': {
                     'pword':'replaceAp(newP)'
                 }
-            }
+            },
+	    {'first':p['first']},
+	    {'last':p['last']},
+	    {'info':p['info']},
+	    #{'piclink':p['piclink']},
+	    {'friends':p['friends']}
         })
         return "Password successfully updated"
 '''
