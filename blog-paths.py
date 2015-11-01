@@ -66,7 +66,7 @@ def feed(username):
     print(request.method == "POST")
     if request.method == "POST":
         print("5")
-        if(str(request.form["post"]) == "posted"):
+        if str(request.form["post"]) == "posted":
             print("2")
             utils.addPost(username, str(request.form["title"]), "sub", str(request.form["paragraph_text"]))
         elif (str(request.form["post"])) == "finding":
