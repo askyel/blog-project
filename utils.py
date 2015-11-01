@@ -73,7 +73,7 @@ def unameAuth(uname):
 
 def unameAuth(username):
     db = connection['Data']
-    accounts = db.accounts.find({'uname':"username"}) 
+    accounts = db.accounts.find({'uname':username}) 
     print accounts.count() 
 
     if accounts.count() == 0:
@@ -227,7 +227,7 @@ def newPic(uname):
 def newPic(username):
     db = connection['Data']
     db.accounts.update_one({
-        {'uname':'username'},
+        {'uname':username},
         {
             '$set':{
                 'piclink':'static/"username".png'
@@ -246,7 +246,7 @@ def findPic(uname):
 
 def findPic(username):
     db = connection['Data']
-    n = db.accounts.find({'uname':'username'},{'picklink':1})[0]
+    n = db.accounts.find({'uname':username},{'picklink':1})[0]
     return r['piclink']
 
 #+=====++ Friends ++=====+#
@@ -304,7 +304,7 @@ def addFriend(username, friend):
         return False
     if not unameAuth(username):
         return False
-        f = db.accounts.find({'$and': [ {'uname':'username'}, {'friends':'friend'} ]},{'friends':1})[0]
+        f = db.accounts.find({'$and': [ {'uname':username}, {'friends':friend} ]},{'friends':1})[0]
     #for s in f:
         #friends = s['friends']
     if friends == "":
@@ -389,7 +389,7 @@ def showFriendPosts(uname):
 '''
 def showFriendPosts(username):
     db = connection['Data']
-    posts = db.posts.find({'username':"username"})
+    posts = db.posts.find({'username':username})
     friendPosts = []
     for r in posts:
         if isFriend(username, r[1]):
@@ -430,7 +430,7 @@ def showComments(ID):
 '''
 def showComments(ID):
     db = connection['Data']
-    comments = db.comments.find({'id':str(ID)},{uname:1,comment:1,time:1,_id:0})
+    comments = db.comments.find({'id':str(ID)},{'uname':1,'comment':1,'time':1,_id:0})
     l = []
     for r in comments:
         l.append(r)
@@ -474,7 +474,7 @@ def showLikes(ID):
 '''
 def showLikes(ID):
     db = connection['Data']
-    likes = db.likes.find({'id':str(ID)}, {uname:1,_id:0})
+    likes = db.likes.find({'id':str(ID)}, {'uname':1,'_id':0})
     l = []
     for r in likes:
         l.append(r[0])
