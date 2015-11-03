@@ -1,185 +1,57 @@
 {% extends "master.html" %}
-<!--
-<!DOCTYPE html>
-<html>
 
-  <head>
-    <meta charset="utf-8">
-    
-    <title>
-      Travlr - Your Feed  
-    </title>
-    
--->
-    <!----------------------------------------------------------------------------------------------------
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-
-    <script src="/static/jquery-1.11.3.min.js"></script>
-
-    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
-    --------------------------------------------------------------------------------------->
-    <!--
-    <style>
-      body{
-      background-image: url(/static/grey_wash_wall.png);
-      background-attachment: fixed;
-      }
-      
-      .container{
-      background-color: transparent;
-      border-radius: 15px;
-      }
-      
-      .post{
-      background-color: #AC9D9E;
-      border-top-left-radius: 15px;
-      border-top-right-radius: 15px;
-      padding: 5%;
-      }
-      
-      .writing{
-      font-family: 'Source Sans Pro', sans-serif;
-      }
-      
-      
-      .menu {
-      background-image: url(/static/textured_stripes.png);
-      right: -250px;  /* start off behind the scenes */
-      height: 100%;
-      position: fixed;
-      width: 250px;
-      z-index: 99999;
-      }
-      
-      
-      .description{
-      color: white;
-      }
-      
-      .fullform{
-      border-radius: 15px;
-      opacity: .8;
-      margin-bottom: 1%;
-      display: none;
-      }
-      
-      .comments{
-      background-color: #AC9D9E;
-      /*border-bottom-right-radius: 15px;
-      border-bottom-left-radius: 15px;*/
-      padding: 5%;
-      }
-      
-      .showcomments{
-      color: white;
-      font-size: 16pt;
-      
-      }
-      
-      .postcomment{
-      opacity: .8;
-      }
-    </style>
-    <script type="text/javascript" src="/static/app.js"></script>
-  </head>
-
--->
-
-{% block body %}
-  <body>
-    <!--
-    <div class="menu">
-      <a href="#" class="close" style="font-size: 36pt ; color: black">✖</a>
-      <div class="list-group" style="margin-top: 80px ; padding: 10px">
-        <ul>
-	  {% for x in friendslist %}
-	  <li style="font-size: 15pt"><a href="/feed/{{x}}">{{x}}'s page</a></li>
-	  {% endfor %}
-        </ul>
-      </div>
-    </div>    
-    
-    
-    
-    <nav class="navbar navbar-default">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="#">Travlr</a>
-        </div>
-        <div>
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="/home/{{username}}">Home</a></li>
-            <li><a href="/feed/{{username}}">My Page</a></li>
-            <li><a href="#" class="friends-button">Your Friends</a></li>
-            <li><a href="/settings/{{username}}">Settings</a></li> 
-            <li><a href="/">Log out</a></li> 
-            <form class="navbar-form navbar-left" role="search" action = "/home/{{username}}", method = "POST">
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="Search" name = "search_for">
-              </div>
-              <button type="submit" class="btn btn-default" name = "post" value = "finding">Submit</button>
-            </form>
-          </ul>
-        </div>
-      </div>
-    </nav>
-    -->
-    
-    
-    <!--------------------------------- MAIN CONTENT --------------------------------------->
-    <div class="container" style="display: table ; width: 75% ; padding: 5%">
-      
-      <div class="container" style="display: table-cell ; width: 75% ; overflow: auto;">
-        <!--START BLOG POST INPUT FORM-->
-        <form style="margin-bottom: 5%">
-          <input type="text" class="form-control startwriting" placeholder="Write something..." style="border-radius: 15px ; height: 50px; opacity: .8">
+{% block body %} 
           
-          <input type="text" class="form-control fullform" placeholder="Title.." style="height: 50px">
-          <textarea class="form-control fullform" name="paragraph_text" cols="50" rows="10" placeholder="Type your post here..."></textarea>
-          <center><button type="submit" class="btn btn-default fullform" name = "button" value = "change">Submit</button></center>
-        </form>
-        <!---------------------------------->
-        
-        <center><a href="#" class="showcomments">Toggle comments!</a></center>
-        <br>
-        
-        {% for x in theposts %}
-	<div style="background-color: #AC9D9E ; border-radius: 15px">
-	  <div class="post">
-            <img src="/static/RickHeadshotCircle copy.png" style="width: 100px ; height: 100px; position: absolute">
-            <center><h1>{{ x[2] }}</h1></center>
-            <br>
-            <br>
-            <center><p>{{ x[4] }}</p></center>
-	  </div>
-          
-          <hr style="width: 50%">
-          <div class="comments">
-	    {% for y in comments %}
-	    {% if x[0] == y[0] %}
-            <div>
-              <h4>{{ y[1] }} commented:</h4>
-              <p>{{ y[2] }}</p>
-              <small style="float: right">{{ y[3] }}</small>
+          <!--------------------------------- MAIN CONTENT --------------------------------------->
+          <div class="container" style="display: table ; width: 75% ; padding: 5%">
+              
+            <div class="container" style="display: table-cell ; width: 75% ; overflow: auto;">
+                <!--START BLOG POST INPUT FORM-->
+                <form style="margin-bottom: 5%">
+                  <input type="text" class="form-control startwriting" placeholder="Write something..." style="border-radius: 15px ; height: 50px; opacity: .8">
+                  
+                  <input type="text" class="form-control fullform" placeholder="Title.." style="height: 50px">
+                  <textarea class="form-control fullform" name="paragraph_text" cols="50" rows="10" placeholder="Type your post here..."></textarea>
+                  <center><button type="submit" class="btn btn-default fullform" name = "button" value = "change">Submit</button></center>
+                </form>
+              <!---------------------------------->
+                
+                <center><a href="#" class="showcomments">Toggle comments!</a></center>
+                <br>
+               
+                {% for x in theposts %}
+		<div style="background-color: #AC9D9E ; border-radius: 15px">
+		  <div class="post">
+                    <img src="/static/RickHeadshotCircle copy.png" style="width: 100px ; height: 100px; position: absolute">
+                    <center><h1>{{ x[2] }}</h1></center>
+              <br>
+              <br>
+                    <center><p>{{ x[4] }}</p></center>
+		  </div>
+                  
+                  <hr style="width: 50%">
+                  <div class="comments">
+		    {% for y in comments %}
+		    {% if x[0] == y[0] %}
+                    <div>
+                      <h4>{{ y[1] }} commented:</h4>
+                      <p>{{ y[2] }}</p>
+                      <small style="float: right">{{ y[3] }}</small>
+                    </div>
+		    {% endif %}
+		    {% endfor %}
+                    <br>
+                  </div>
+                  <form action="/home/{{username}}", method = "POST">
+                    <input type="text" class="form-control startcomment" placeholder="Write something..." style="height: 50px; opacity: .8; border-bottom-right-radius: 15px; border-bottom-left-radius: 15px" name = "comments">
+		    <input type = "hidden" name = "id" value = "{{ x[0] }}">
+		</div>
+            <center><button type="submit" class="btn btn-default postcomment" name = "post" value = "commenting">Post comment</button></center>
+                    </form>
+		<hr style="width: 75%">
+		{% endfor %}
+              
+                
             </div>
-	    {% endif %}
-	    {% endfor %}
-            <br>
           </div>
-          <form action="/home/{{username}}", method = "POST">
-            <input type="text" class="form-control startcomment" placeholder="Write something..." style="height: 50px; opacity: .8; border-bottom-right-radius: 15px; border-bottom-left-radius: 15px" name = "comments">
-	    <input type = "hidden" name = "id" value = "{{ x[0] }}">
-	</div>
-        <center><button type="submit" class="btn btn-default postcomment" name = "post" value = "commenting">Post comment</button></center>
-        </form>
-	<hr style="width: 75%">
-	{% endfor %}
-        
-        
-      </div>
-    </div>
-    
-    
-  </body>
 {% endblock %}
