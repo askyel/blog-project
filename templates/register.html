@@ -4,65 +4,28 @@
     <meta charset="utf-8">
     <title>Log In</title>
     <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
-      
+    
     <!-------------------------------------------------------------------------------------------------------->
 
-            <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 
-<!-- Latest compiled and minified JavaScript -->
-<script src="/static/jquery-1.11.3.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="/static/jquery-1.11.3.min.js"></script>
 
-<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
-<!-------------------------------------------------------------------------------------------------------->
-      
-      
-    <style>
-      body{
-        background-image: url(/static/footer_lodyas.png);
-          overflow: hidden;
-      }
+    <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300' rel='stylesheet' type='text/css'>
+    <!-------------------------------------------------------------------------------------------------------->
+    <link href="../static/register.css" rel="stylesheet">
 
-      .form{
-        position: absolute;
-        top: 50% ;
-        left: 50% ;
-        transform: translateX(-50%) translateY(-50%);
-        border-radius: 20px;
-        background-color: #F3F1EC;
-        padding: 15px;
-        -webkit-box-shadow: 0px 0px 5px 10px rgba(0,0,0,0.25);
-        -moz-box-shadow: 0px 0px 5px 10px rgba(0,0,0,0.25);
-        box-shadow: 0px 0px 5px 10px rgba(0,0,0,0.25);
-        width: 50%;
-      }
-
-      input{
-        border-radius: 10px;
-        opacity: 0.7;
-        background-color: black;
-        color: white;
-        font-size: 20pt;
-      }
-
-
-      .writing{
-          font-family: 'Source Sans Pro', sans-serif;
-      }
-
-    </style>
   </head>
-
-
-
   <body>
     <center>
       <form class="form" action="/register" method="POST">
-        <h2 class="writing" style="font-weight: 400">Register bro</h2>
-	    <font color="red" class="writing">{{text}}</font>
+        <h2 class="writing" style="font-weight: 400">Register</h2>
+	<font color="red" class="writing">{{text}}</font>
         
         <h3 class="writing">First Name: <input class="writing" type="text" name="firstname" > </h3>
         <h3 class="writing">Last Name: <input class="writing" type="text" name="lastname" > </h3>          
@@ -70,7 +33,7 @@
         <h3 class="writing">Password: <input class="writing" type="password" name="password" > </h3>
         <label class="form-control" style="background-color: transparent">Write a quick description about yourself:</label>
         <textarea class="form-control" name="paragraph_text" cols="40" rows="10" placeholder="Type your post here..."></textarea>
-          <input type="file" id="profile-picture" style="font-size: 14pt; background-color: transparent; color: black">
+        <input type="file" id="profile-picture" style="font-size: 14pt; background-color: transparent; color: black">
         
 
         <br>
