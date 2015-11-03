@@ -1,0 +1,59 @@
+body{
+    background-image: url(/static/grey_wash_wall.png);
+    background-attachment: fixed;
+}
+
+.container{
+    background-color: transparent;
+    border-radius: 15px;
+}
+
+.post{
+    background-color: #AC9D9E;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    padding: 5%;
+}
+
+.writing{
+    font-family: 'Source Sans Pro', sans-serif;
+}
+
+
+.menu {
+    background-image: url(/static/textured_stripes.png);
+    right: -250px;  /* start off behind the scenes */
+    height: 100%;
+    position: fixed;
+    width: 250px;
+    z-index: 99999;
+}
+
+
+.description{
+    color: white;
+}
+
+.fullform{
+    border-radius: 15px;
+    opacity: .8;
+    margin-bottom: 1%;
+    display: none;
+}
+
+.comments{
+    background-color: #AC9D9E;
+    /*border-bottom-right-radius: 15px;
+      border-bottom-left-radius: 15px;*/
+    padding: 5%;
+}
+
+.showcomments{
+    color: white;
+    font-size: 16pt;
+    
+}
+
+.postcomment{
+    opacity: .8;
+}
