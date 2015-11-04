@@ -77,6 +77,7 @@ def feed(username):
         elif (str(request.form["post"])) == "commenting":
             utils.addComment(str(request.form["id"]), username, str(request.form["comments"]))
     return render_template("feed.html", comments = utils.showAllComments(), username = username, compareto = username,  posts = utils.showPosts(username), name = utils.findName(username), info = utils.showInfo(username), friendslist = utils.friendList(username))
+
 '''
 @app.route("/<username>")
 @app.route("/<username>/<user2>", methods = ["GET", "POST"])
