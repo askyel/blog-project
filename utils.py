@@ -134,7 +134,7 @@ def addAccount(username, password, first, last, info):
         'first':replaceAp(first),
         'last':replaceAp(last),
 	'info':replaceAp(info),
-	'friends':' '
+	'friends':''
     })
 
 """
@@ -270,9 +270,13 @@ def friendList(uname): # returns list of friends
 
 def friendList(username):
     db = connection['Data']
-    n = db.accounts.find_one({'uname':username}, {'friends':1})
+    n = db.accounts.find_one({'uname':username})
     if 'friends' in n:
-        return n['friends'].split(",")
+        l = n['friends'].split(",")
+        for i in l:
+            if len(i) == 0:
+                l.remove(i)
+        return l 
     return []
         
 def isFriend(uname, friend): # returns if uname has friend as friend
@@ -313,17 +317,20 @@ def addFriend(username, friend):
         return False
     if not unameAuth(username):
         return False
-        f = db.accounts.find({'$and': [ {'uname':username}, {'friends':friend} ]},{'friends':1})[0]
+    #f = db.accounts.find({'uname':username})
     #for s in f:
         #friends = s['friends']
-    if friends == "":
-        friends += ","
-    #friends += friend
+    friendString = db.accounts.find_one({'uname':username})['friends']
+    if friend != "":
+        print friendString
+        friendString += friend
+        print friendString
+        friendString+=","
     db.accounts.update_one(
-        {'uname':'username'},
+        {'uname':username},
         {
             '$set': {
-                'friends': friend
+                'friends': friendString
             }
         }
     )
