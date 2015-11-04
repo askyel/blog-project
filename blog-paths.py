@@ -27,6 +27,7 @@ def register():
             return render_template("/register.html", text = "this username already exists")
     else:
         return render_template("/home.html")
+
 @app.route("/home")
 @app.route("/home/<username>", methods = ["GET", "POST"])
 def home(username):
@@ -73,9 +74,8 @@ def feed(username):
             print(str(request.form["search_for"]))
             print("3")
             utils.addFriend(username, str(request.form["search_for"]))
-            print(utils.isFriend(username, str(request.form["search_for"])))
+            #print(utils.isFriend(username, str(request.form["search_for"])))
         elif (str(request.form["post"])) == "commenting":
-            print str(request.form['comments'])
             utils.addComment(str(request.form["id"]), username, str(request.form["comments"]))
     return render_template("feed.html", comments = utils.showAllComments(), username = username, compareto = username,  posts = utils.showPosts(username), name = utils.findName(username), info = utils.showInfo(username), friendslist = utils.friendList(username))
 
