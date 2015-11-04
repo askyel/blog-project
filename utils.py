@@ -317,7 +317,7 @@ def addFriend(username, friend):
         return False
     if not unameAuth(username):
         return False
-<<<<<<< HEAD
+
     #f = db.accounts.find({'uname':username})
     #for s in f:
         #friends = s['friends']
@@ -327,13 +327,13 @@ def addFriend(username, friend):
         friendString += friend
         print friendString
         friendString+=","
-=======
+
         f = db.accounts.find({'$and': [ {'uname':username}, {'friends':friend} ]},{'friends':1})[0]
     friends = ""
     #if friends == "":
         #friends += ","
     #friends += friend
->>>>>>> f3be6ded4c640ad27eee0d67d30c2d340a414d73
+
     db.accounts.update_one(
         {'uname':username},
         {
