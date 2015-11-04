@@ -93,10 +93,13 @@ def pwordAuth(uname, pword):
 def pwordAuth(username, password):
     db = connection['Data']
     #print db.accounts.find_one({'uname':username})
+    print password
+    print username
     result = db.accounts.find_one({'uname':username})
     if result == None or len(result) == 0:
 	    return False
     p = result['pword']
+    print p
     return p == password
     
 """
@@ -365,7 +368,7 @@ def addPost(uname, title, sub, post):
 def addPost(username, title, sub, post):
     db = connection['Data']
     db.posts.insert({'id':findID(), 'uname':username, 'title':replaceAp(title), 'sub':replaceAp(sub), 'post':replaceAp(post), 'time':displayDate()})
-    db.posts.find()
+
 '''
 def showPosts(uname):
     conn = sqlite3.connect("Data.db")
@@ -381,7 +384,8 @@ def showPosts(username):
     posts = db.posts.find({'uname':username})
     l = []
     for r in posts:
-        l.append(r['post'])
+        item = [r['title'],r['uname'],r['sub'],r['post']]
+        l.append(item)
     return l
 
 '''
@@ -427,7 +431,18 @@ def addComment(ID, uname, comment):
 
 def addComment(ID, username, comment):
     db = connection['Data']
-    db.comments.upsert({'id':ID,'uname':username,'comment':replaceAp(comment), 'time':displayDate()})
+    db.comments.update(
+        {'id':ID},
+        {
+            '$set': {
+                'uname':username,
+                'comment':replaceAp(comment),
+                'time':displayDate()
+            }
+        },
+        upsert=True
+    )
+    db.comments.find({'id':ID})
 
 '''
 def showComments(ID):
@@ -445,7 +460,8 @@ def showComments(ID):
     comments = db.comments.find({'id':str(ID)})
     l = []
     for r in comments:
-        l.append(r['comment'])
+        item = [r['ID'],r['uname'],r['comment'],r['time']]
+        l.append(item)
     return l
 
 '''
@@ -463,7 +479,8 @@ def showAllComments():
     comments = db.comments.find()
     l = []
     for r in comments:
-        l.append(r['comment'])
+        item = [r['id'],r['uname'],r['comment'],r['time']]
+        l.append(item)
     return l
 
 '''
